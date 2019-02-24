@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.2.xsd
+		http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-3.2.xsd
+		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.2.xsd">
+	
+	<bean class="com.demo.exception.BlogExceptionResolver"></bean>
+	<!-- 启用spring mvc 注解 -->
+	<context:annotation-config />
+	
+	<!-- 数据转换器 -->
+	<mvc:annotation-driven>
+		<mvc:message-converters register-defaults="true">  
+	        <!-- 自定义json转换器 -->  
+	        <bean id="fastJsonHttpMessageConverter" class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter">  
+	            <property name="supportedMediaTypes">  
+	                <list>  
+	                    <value>application/json;charset=UTF-8</value>  
+	                </list>  
+	            </property>
+	            <property name="objectMapper">  
+                    <bean class="com.fasterxml.jackson.databind.ObjectMapper">  
+                        <property name="dateFormat">  
+                            <bean class="java.text.SimpleDateFormat">  
+                                <constructor-arg type="java.lang.String" value="yyyy-MM-dd HH:mm:ss" />  
+                            </bean>  
+                        </property>  
+                    </bean>  
+                </property>  
+	        </bean>  
+	    </mvc:message-converters>
+	</mvc:annotation-driven>
+	
+	<!-- 扫描注解 -->
+	<context:component-scan base-package="com.demo.controller">
+		<context:include-filter type="annotation"
+			expression="org.springframework.stereotype.Controller" />
+	</context:component-scan>
+	
+	<!-- 静态资源映射 -->
+	<mvc:resources mapping="/css/**" location="/WEB-INF/resources/css/" />
+	<mvc:resources mapping="/js/**" location="/WEB-INF/resources/js/" />
+	<mvc:resources mapping="/images/**" location="/WEB-INF/resources/images/" />
+	<mvc:resources mapping="/plug/**" location="/WEB-INF/resources/plug/" />
+	<mvc:resources mapping="/kindeditor/**" location="/WEB-INF/resources/kindeditor/" />
+	
+		<!-- 定义JSP文件的位置 -->  
+	<bean id="jspViewResolver"
+		class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<property name="viewClass" value="org.springframework.web.servlet.view.JstlView" />
+		<property name="order" value="1" />  
+		<!-- 前缀 -->
+		<property name="prefix" value="/WEB-INF/view/" />
+		<!-- 后缀 -->
+		<property name="suffix" value=".jsp" />
+	</bean>
+
+
+
+	<!-- 多视图解析 .json .xml -->
+	<bean
+		class="org.springframework.web.servlet.view.ContentNegotiatingViewResolver">
+		<property name="order" value="1" />
+		<!-- 用于开启 /userinfo/123?format=json 的支持 默认是true -->
+		<property name="favorParameter" value="false" />
+		<!-- 用于关闭 /userinfo/123.json 的支持 默认是true -->
+		<property name="favorPathExtension" value="true" />
+		<!-- 设置为true以忽略对Accept Header的支持 -->
+		<property name="ignoreAcceptHeader" value="true" />
+		<!-- 在没有扩展名时即: "/user/1" 时的默认展现形式 -->
+		<property name="defaultContentType" value="text/html" />
+		<!-- 扩展名至mimeType的映射,即 /user.json => application/json -->
+		<property name="mediaTypes">
+			<map>
+				<entry key="json" value="application/json" />
+			</map>
+		</property>
+		<property name="defaultViews">
+			<list>
+				<ref bean="jsonView" />
+			</list>
+		</property>
+	</bean>
+
+	<bean name="jsonView"
+		class="org.springframework.web.servlet.view.json.MappingJackson2JsonView">
+	</bean>
+	
+	<!-- <mvc:interceptors>
+		<mvc:interceptor>
+			<mvc:mapping path="/manage/**"/>
+			<bean class="com.demo.security.ForeInterceptor" />
+		</mvc:interceptor>
+	</mvc:interceptors> -->	
+	
+</beans>

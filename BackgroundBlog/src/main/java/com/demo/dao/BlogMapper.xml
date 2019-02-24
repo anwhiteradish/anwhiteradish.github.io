@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.demo.dao.BlogMapper">
+
+	<resultMap id="BaseResultMap" type="com.demo.entity.TBlog" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="title" property="title" jdbcType="VARCHAR" />
+    <result column="summary" property="summary" jdbcType="VARCHAR" />
+    <result column="releaseDate" property="releaseDate" jdbcType="TIMESTAMP" />
+    <result column="readCount" property="readCount" jdbcType="INTEGER" />
+    <result column="commentCount" property="commentCount" jdbcType="INTEGER" />
+    <result column="keyWord" property="keyWord" jdbcType="VARCHAR" />
+    <result column="blogType" property="blogType" jdbcType="INTEGER" />
+    <result column="isShow" property="isShow" jdbcType="BIT" />
+    <result column="isReply" property="isReply" jdbcType="BIT" />
+    <result column="isCommend" property="isCommend" jdbcType="BIT" />
+    <result column="type_id" property="typeId" jdbcType="INTEGER" />
+  </resultMap>
+	<select id="queryList" parameterType="PageBean" resultType="TBlog">
+		SELECT *
+		FROM t_blog
+		ORDER BY releaseDate ASC
+		LIMIT #{startIndex},#{pageSize}
+	</select>
+	<select id="queryTotal" resultType="long">
+		SELECT COUNT(*) FROM t_blog
+	</select>
+	<insert id="createSelectivity" parameterType="TBlog" flushCache="true"  useGeneratedKeys="true" keyProperty="id"  >
+		INSERT INTO t_blog
+		<trim prefix="(" suffix=")"  suffixOverrides="," >
+			<!-- <if test="id != null ">
+			id,
+			</if> -->
+			<if test="title != null ">
+			title,
+			</if>
+			<if test="summary != null and summary!=''">
+			summary,
+			</if>
+			
+			<if test="readCount != null ">
+			readCount,
+			</if>
+			<if test="commentCount != null ">
+			commentCount,
+			</if>
+			<if test="content != null ">
+			content,
+			</if>
+			<if test="keyWord != null ">
+			keyWord,
+			</if>
+			<if test="blogType != null ">
+			blogType,
+			</if>
+			<if test="isShow != null ">
+			isShow,
+			</if>
+			<if test="isReply != null ">
+			isReply,
+			</if>
+			<if test="isCommend != null ">
+			isCommend,
+			</if>
+			<if test="typeId != null ">
+			typeId,
+			</if>
+		</trim>
+		VALUES
+		<trim prefix="(" suffix=")"  suffixOverrides="," >
+			<!-- <if test="id != null ">
+			#{id, jdbcType=VARCHAR},
+			</if> -->
+			<if test="title != null ">
+			#{title, jdbcType=VARCHAR},
+			</if>
+			<if test="summary != null and content!=''">
+			#{summary, jdbcType=VARCHAR},
+			</if>
+			
+			<if test="readCount != null ">
+			#{readCount, jdbcType=VARCHAR},
+			</if>
+			<if test="commentCount != null ">
+			#{commentCount, jdbcType=VARCHAR},
+			</if>
+			<if test="content != null ">
+			#{content, jdbcType=VARCHAR},
+			</if>
+			<if test="keyWord != null ">
+			#{keyWord, jdbcType=VARCHAR},
+			</if>
+			<if test="blogType != null ">
+			#{blogType, jdbcType=VARCHAR},
+			</if>
+			<if test="isShow != null ">
+			#{isShow, jdbcType=VARCHAR},
+			</if>
+			<if test="isReply != null ">
+			#{isReply, jdbcType=VARCHAR},
+			</if>
+			<if test="isCommend != null ">
+			#{isCommend, jdbcType=VARCHAR},
+			</if>
+			<if test="typeId != null ">
+			#{typeId, jdbcType=VARCHAR},
+			</if>
+			
+		</trim>
+	</insert>
+	<select id="queryById" parameterType="Integer" resultMap="BaseResultMap">
+		SELECT *
+		FROM t_blog
+		WHERE id = #{id}
+	</select>
+	<!-- <update id="updateBlog" parameterType="TBlog">
+		UPDATE t_blog
+		SET title=#{title},summary=#{summary},readCount=#{readCount},
+		commentCount=#{commentCount},content=#{content},keyWord=#{keyWord},
+		blogType=#{blogType},isShow=#{isShow},isReply=#{isReply},
+		isCommend=#{isCommend},typeId=#{typeId} 
+		WHERE id=#{id}
+	</update> -->
+	<update id="updateSelectivity" parameterType="TBlog" flushCache="true">
+		UPDATE t_blog
+		<trim prefix="SET" suffixOverrides="," >
+			<if test="title != null ">
+			title = #{title, jdbcType=VARCHAR},
+			</if>
+			<if test="summary != null ">
+			summary = #{summary, jdbcType=VARCHAR},
+			</if>
+			<if test="readCount != null ">
+			readCount = #{readCount, jdbcType=VARCHAR},
+			</if>
+			<if test="commentCount != null ">
+			commentCount = #{commentCount, jdbcType=INTEGER},
+			</if>
+			<if test="content != null ">
+			content = #{content, jdbcType=VARCHAR},
+			</if>
+			<if test="keyWord != null ">
+			keyWord = #{keyWord, jdbcType=VARCHAR},
+			</if>
+			<if test="blogType != null ">
+			blogType = #{blogType, jdbcType=INTEGER},
+			</if>
+			<if test="isShow != null ">
+			isShow = #{isShow, jdbcType=DATE},
+			</if>
+			<if test="isReply != null ">
+			isReply = #{isReply, jdbcType=VARCHAR},
+			</if>
+			<if test="isCommend != null ">
+			isCommend = #{isCommend, jdbcType=VARCHAR},
+			</if>
+			<!-- <if test="typeId != null ">
+			typeId = #{typeId, jdbcType=VARCHAR},
+			</if> -->
+			
+		</trim>
+		WHERE id = #{id, jdbcType = INTEGER}
+	</update>
+</mapper>
+

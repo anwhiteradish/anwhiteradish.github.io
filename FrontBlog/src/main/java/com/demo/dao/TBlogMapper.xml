@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.demo.dao.TBlogMapper" >
+  <resultMap id="BaseResultMap" type="com.demo.entity.TBlog" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="title" property="title" jdbcType="VARCHAR" />
+    <result column="summary" property="summary" jdbcType="VARCHAR" />
+    <result column="releaseDate" property="releaseDate" jdbcType="TIMESTAMP" />
+    <result column="readCount" property="readCount" jdbcType="INTEGER" />
+    <result column="commentCount" property="commentCount" jdbcType="INTEGER" />
+    <result column="keyWord" property="keyWord" jdbcType="VARCHAR" />
+    <result column="blogType" property="blogType" jdbcType="INTEGER" />
+    <result column="isShow" property="isShow" jdbcType="BIT" />
+    <result column="isReply" property="isReply" jdbcType="BIT" />
+    <result column="isCommend" property="isCommend" jdbcType="BIT" />
+    <result column="type_id" property="type_id" jdbcType="INTEGER" />
+  </resultMap>
+  <resultMap id="ResultMapWithBLOBs" type="com.demo.entity.TBlog" extends="BaseResultMap" >
+    <result column="content" property="content" jdbcType="LONGVARCHAR" />
+  </resultMap>
+  <sql id="allfield">
+  id,
+  title,
+  summary,
+  releaseDate,
+  readCount,
+  commentCount,
+  content,
+  keyWord,
+  blogType,
+  isShow,
+  isReply,
+  isCommend,
+  type_id
+  </sql>
+  <select id="queryList" parameterType="PageBean" resultMap="BaseResultMap">
+  	SELECT
+  <include refid="allfield"></include>
+	FROM t_blog 
+	WHERE isShow = 1
+	ORDER BY releaseDate DESC
+	LIMIT #{startIndex},#{pageSize}
+  </select>
+  <select id="queryTotal" resultType="int">
+  	SELECT COUNT(*) FROM t_blog
+  </select>
+  <select id="queryOneBlog" parameterType="int" resultMap="BaseResultMap">
+  SELECT <include refid="allfield"></include> FROM t_blog WHERE id=#{id}
+  </select>
+  
+  <select id="search" parameterType="String" resultMap="BaseResultMap">
+		select <include refid="allfield"></include> 
+		from t_blog
+		<where>
+			<if test="_parameter!=null and _parameter!=''">
+				OR title like concat('%',#{title},'%')
+			</if>
+			<if test="_parameter!=null and _parameter!=''">
+				OR summary like concat('%',#{summary},'%')
+			</if>
+			<if test="_parameter!=null and _parameter!=''">
+				OR keyWord like concat("%",#{keyWord},"%")
+			</if>
+			<if test="_parameter!=null and _parameter!=''">
+				OR content like concat('%',#{content},'%')
+			</if>
+		</where>
+		ORDER BY releaseDate DESC
+	</select>
+  
+  	<select id="searchCount" parameterType="String" resultType="int">
+		select count(*) from t_blog
+		<where>
+			<if test="_parameter!=null and _parameter!=''">
+				OR title like concat('%',#{title},'%')
+			</if>
+			<if test="_parameter!=null and _parameter!=''">
+				OR summary like concat('%',#{summary},'%')
+			</if>
+			<if test="_parameter!=null and _parameter!=''">
+				OR keyWord like concat("%",#{keyWord},"%")
+			</if>
+			<if test="_parameter!=null and _parameter!=''">
+				OR content like concat('%',#{content},'%')
+			</if>
+		</where>
+		
+	</select>
+  
+</mapper>

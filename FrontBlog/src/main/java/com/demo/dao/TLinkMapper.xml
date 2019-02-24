@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.demo.dao.TLinkMapper" >
+  <resultMap id="BaseResultMap" type="com.demo.entity.TLink" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="linkname" property="linkname" jdbcType="VARCHAR" />
+    <result column="linkurl" property="linkurl" jdbcType="VARCHAR" />
+    <result column="orderNum" property="ordernum" jdbcType="INTEGER" />
+  </resultMap>
+  
+</mapper>
